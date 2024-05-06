@@ -5,18 +5,18 @@ from abc import ABC, abstractmethod
 
 class base_mod(nn.Module):
     def __init__(self, dataset, graph, itemID_parties, party_num, args):
-        super(GAT, self).__init__()
+        super(base_mod, self).__init__()
         self.dataset = dataset
-        self.Graph = graph
+        self.Graph = graph.to(args.device)
         self.latent_dim = args.latent_dim
         self.n_layers = args.n_layers
         self.keep_prob = args.keep_prob
         self.A_split = args.A_split
         self.pretrain = args.pretrain
         self.dropout = args.dropout 
-        self.alpha = args.alpha
+        self.alpha = 0.01
         self.thd = args.thd
-
+        self.args = args
         if args.act_function == 'sigmoid':
           self.f = nn.Sigmoid()
         elif args.act_function == 'relu':
@@ -24,7 +24,7 @@ class base_mod(nn.Module):
         elif args.act_function == 'tanh':
           self.f = nn.Tanh()
         torch.manual_seed(12345)
-        W_data = torch.normal(mean=0, std=1, size=(args.latent_dim, args.latent_dim))
+        self.W_data = torch.normal(mean=0, std=1, size=(args.latent_dim, args.latent_dim))
         layer_agg_weight = torch.ones(args.n_layers+1)/(args.n_layers+1)
         self.layer_agg_weight = nn.parameter.Parameter(data=layer_agg_weight, requires_grad=True)
         
@@ -60,13 +60,14 @@ class base_mod(nn.Module):
     def sqr_loss(self, ratings, prediction):
         itemEmb0 = self.embedding_item.weight
         reg_loss = itemEmb0.norm(2).pow(2)/self.num_items
+        ratings = ratings.to(prediction.device)
         loss = (prediction - ratings).pow(2).sum()
         loss = loss + reg_loss
         return loss
        
-    def forward(self, users, items, missing_user_aggs=None):
+    def forward(self, users, items, missing_user_aggs=None, phi_inv=None, cor_ratio=None):
         # compute embedding
-        all_users, all_items = self.computer(missing_user_aggs)
+        all_users, all_items = self.computer(missing_user_aggs, phi_inv ,cor_ratio, self.args)
         
         users_emb = all_users[users.long()]
         items_emb = all_items[items.long()]
@@ -76,10 +77,10 @@ class base_mod(nn.Module):
 
 class GAT(base_mod):
     def __init__(self, dataset, graph, itemID_parties, party_num, args):
-        super(GAT, self).__init__()
+        super(base_mod, self).__init__()
         self.a = nn.Parameter(torch.ones(size=(2*args.latent_dim, 1)))
         self.leakyrelu = nn.LeakyReLU(self.alpha)
-        self.feat_transform = nn.ParameterList([nn.Parameter(W_data) for i in range(args.n_layers)])
+        self.feat_transform = nn.ParameterList([nn.Parameter(self.W_data) for i in range(args.n_layers)])
         self.__init_weight(itemID_parties, party_num, args)
 
     def __init_weight(self, itemID_parties, party_num, args):
@@ -186,8 +187,8 @@ class GAT(base_mod):
 
 class GCN(base_mod):
     def __init__(self, dataset, graph, itemID_parties, party_num, args):
-        super(GCN, self).__init__()
-        self.feat_transform = nn.ModuleList([nn.Linear(args.latent_dim, args.latent_dim, bias=False) for i in range(args.n_layers)])
+        super(GCN, self).__init__(dataset, graph, itemID_parties, party_num, args)
+        self.feat_transform = nn.ModuleList([nn.Linear(args.latent_dim, args.latent_dim, bias=False).to(args.device) for i in range(args.n_layers)])
         self.feat_transform.apply(self.feat_init_weights)
         self.__init_weight(itemID_parties, party_num, args)
 
@@ -212,6 +213,8 @@ class GCN(base_mod):
         self.users_emb_agg = [0 for i in range(self.n_layers)]
         users_emb = self.embedding_user.weight
         items_emb = self.embedding_item.weight
+        users_emb = users_emb.to(self.Graph.t().device)
+        items_emb = items_emb.to(users_emb.device)
         embs_user = [users_emb]
         embs_item = [items_emb]
         for layer in range(self.n_layers):
@@ -219,6 +222,9 @@ class GCN(base_mod):
             this_users_emb = embs_user[-1]
             this_items_emb = embs_item[-1]
             # update item embeddings
+            # this_users_emb = this_users_emb.to(self.Graph.t().device)
+            # this_items_emb = this_items_emb.to(this_users_emb.device)
+            
             update_items_emb = torch.mm(self.Graph.t(), this_users_emb) + this_items_emb
             update_items_emb = this_transform(update_items_emb)
             update_items_emb = self.f(update_items_emb)
@@ -251,7 +257,7 @@ class GCN(base_mod):
             missing_user_aggs = torch.stack(temp)
         else:
             missing_user_aggs = [0 for layer in range(self.n_layers)]
-
+        missing_user_aggs = missing_user_aggs.to(users_emb.device)
         for layer in range(self.n_layers):
             this_transform = self.feat_transform[layer]
             this_users_emb = embs_user[-1]

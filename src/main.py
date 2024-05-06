@@ -7,6 +7,7 @@ import torch.optim as optim
 import time
 import argparse
 import warnings
+from tqdm import tqdm
 warnings.filterwarnings(action='ignore', category=FutureWarning) 
 
 if __name__ == '__main__':
@@ -34,7 +35,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     if args.dataset == "movielens":
-        data = pd.read_csv('/root/ratings.csv')
+        data = pd.read_csv('rating.csv')
     else:
         data = pd.read_csv('/root/Book-Ratings.csv')
         top_users = data.groupby('User-ID')['Book-Rating'].count()
@@ -43,10 +44,10 @@ if __name__ == '__main__':
         top_items = data.groupby('ISBN')['Book-Rating'].count()
         top_items = top_items.sort_values(ascending=False)[:3000].index
         data = data[data['ISBN'].isin(top_items)]
-        data.columns = ['UserID', 'MovieID', 'Rating']
+        data.columns = ['UserId', 'MovieId', 'Rating']
     
-    userIDs = data.UserID.unique()
-    itemIDs = data.MovieID.unique()
+    userIDs = data.UserId.unique()
+    itemIDs = data.movieId.unique()
 
     userid2encode = {}
     for i, userid in enumerate(userIDs):
@@ -59,6 +60,8 @@ if __name__ == '__main__':
     # number of parties
     n_items = max(itemid2encode.values()) + 1
     items_per_party = n_items//args.n_parties
+    print("Number of items:",n_items)
+    print("Number of users:", len(userIDs))
     itemID_parties = {}
     start = 0
     for i in range(args.n_parties):
@@ -69,23 +72,23 @@ if __name__ == '__main__':
       itemID_parties[i] = torch.arange(start, end)
       start += items_per_party
     
-    data['UserID'] = data['UserID'].apply(lambda x: userid2encode[x])
-    data['MovieID'] = data['MovieID'].apply(lambda x: itemid2encode[x])
+    data['UserId'] = data['UserId'].apply(lambda x: userid2encode[x])
+    data['movieId'] = data['movieId'].apply(lambda x: itemid2encode[x])
     data = data.sample(frac=1).reset_index(drop=True)
-    max_rating = data.Rating.max()
-
+    max_rating = data.rating.max()
+    print("Max rating:", max_rating)
     train_pct = 0.8
     n_trains = int(len(data)*train_pct)
     train_data = data.loc[:n_trains]
     test_data = data.loc[n_trains:]
 
-    train_users = train_data.UserID.values
-    train_items = train_data.MovieID.values
-    train_ratings = train_data.Rating.values
+    train_users = train_data.UserId.values
+    train_items = train_data.movieId.values
+    train_ratings = train_data.rating.values
 
-    test_users = test_data.UserID.values
-    test_items = test_data.MovieID.values
-    test_ratings = test_data.Rating.values
+    test_users = test_data.UserId.values
+    test_items = test_data.movieId.values
+    test_ratings = test_data.rating.values
     if args.model == "GCN":
         train_dataset = GCNdata(train_users, train_items, train_ratings)
         test_dataset = GCNdata(test_users, test_items, test_ratings)
@@ -102,7 +105,7 @@ if __name__ == '__main__':
           batch_size=args.batch_size, shuffle=False, num_workers=0)
 
     dataset = train_dataset
-
+    print("Number of users:", dataset.n_users)
     p = dataset.n_users//args.dim_red
     w = dataset.n_users//args.dim_red
     t = p//w
@@ -112,12 +115,12 @@ if __name__ == '__main__':
     phi = torch.from_numpy(phi).float()
     phi_inv = torch.from_numpy(phi_inv).float()
 
-    Graphs = train_dataset.getSparseGraphs(itemID_parties, args.thd)
+    Graphs = train_dataset.getSparseGraphs(itemID_parties, args)
     if args.model == "GCN":
-       itr_graphs = get_itr_graph(Graphs)
+       itr_graphs = get_itr_graph(Graphs, dataset.n_users, args)
     models = []
     optimizers = []
-    for i in range(args.n_parties):
+    for i in tqdm(range(args.n_parties)):
         if args.model == "GCN":
             this_graph = itr_graphs[i]
             model = GCN(dataset, this_graph, itemID_parties, i, args)
@@ -132,10 +135,9 @@ if __name__ == '__main__':
         models.append(model)
         optimizer = optim.Adagrad(model.parameters(), lr=args.lr, initial_accumulator_value=1e-8)
         optimizers.append(optimizer)
-
+    print("Training Started....")
     if args.model == "GCN":
-        train_dataset = GCNdata(train_users, train_items, train_ratings)
-        test_dataset = GCNdata(test_users, test_items, test_ratings)
+        train_GCN(train_loader, test_loader, models, itemID_parties, optimizers, dataset,max_rating, phi, phi_inv,args)
     elif args.model == "GAT":
         train_dataset = GATdata(train_users, train_items, train_ratings)
         test_dataset = GATdata(test_users, test_items, test_ratings)

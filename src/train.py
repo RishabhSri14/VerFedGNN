@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import time
 from utils import metrics
+from tqdm import tqdm
 
 def train_GAT(train_loader, test_loader, models, itemID_parties, optimizers, dataset, phi, args):
         count, best_rmse = 0, 100
@@ -128,13 +129,13 @@ def train_GAT(train_loader, test_loader, models, itemID_parties, optimizers, dat
 
         print("End. Best epoch {:03d}: Test_RMSE is {:.3f}".format(best_epoch, best_rmse))
 
-def train_GCN(train_loader, test_loader, models, itemID_parties, optimizers, dataset, phi, args):
+def train_GCN(train_loader, test_loader, models, itemID_parties, optimizers, dataset,max_rating, phi, phi_inv, args):
         count, best_rmse = 0, 100
-        for epoch in range(args.epochs):
+        for epoch in tqdm(range(args.epochs)):
           start_time = time.time()
           center_party = np.random.choice(args.n_parties)
           for users, items, ratings in train_loader:
-            selected_parties = np.random.choice(args.n_parties, args.n_ptcp, replace=False)
+            selected_parties = np.random.choice(args.n_parties, args.ptcp, replace=False)
 
             # compute gradients
             user_emb_grad = 0
@@ -171,7 +172,7 @@ def train_GCN(train_loader, test_loader, models, itemID_parties, optimizers, dat
                   if j!=i:
                     this_useremb_aggs += useremb_aggs[j]
                 this_useremb_aggs = torch.einsum('pu,huk->hpk', phi, this_useremb_aggs) * cor_ratio
-                prediction = this_model(this_users, this_items, this_useremb_aggs)
+                prediction = this_model(this_users, this_items, this_useremb_aggs, phi_inv,cor_ratio)
                 loss = this_model.sqr_loss(this_ratings, prediction)
                 loss.backward()
                 # obtain user embedding gradients
@@ -179,8 +180,8 @@ def train_GCN(train_loader, test_loader, models, itemID_parties, optimizers, dat
                 this_user_emb_grad = torch.clamp(this_user_emb_grad, -0.5, 0.5)
                 random_neg = np.random.uniform(low=-args.clip, high=0, size=this_user_emb_grad.shape)
                 random_pos = np.random.uniform(low=0, high=args.clip, size=this_user_emb_grad.shape)
-                random_neg = torch.from_numpy(random_neg).float()
-                random_pos = torch.from_numpy(random_pos).float()
+                random_neg = torch.from_numpy(random_neg).float().to(args.device)
+                random_pos = torch.from_numpy(random_pos).float().to(args.device)
                 this_user_emb_grad = (this_user_emb_grad > random_pos) * args.clip + (this_user_emb_grad < random_neg) * (-args.clip)
                 this_user_emb_grad = this_user_emb_grad.float()
                 user_emb_grad += this_user_emb_grad
@@ -190,8 +191,8 @@ def train_GCN(train_loader, test_loader, models, itemID_parties, optimizers, dat
                     this_feat_transform = torch.clamp(this_feat_transform, -0.5, 0.5)
                     random_neg = np.random.uniform(low=-args.clip, high=0, size=this_feat_transform.shape)
                     random_pos = np.random.uniform(low=0, high=args.clip, size=this_feat_transform.shape)
-                    random_neg = torch.from_numpy(random_neg).float()
-                    random_pos = torch.from_numpy(random_pos).float()
+                    random_neg = torch.from_numpy(random_neg).float().to(args.device)
+                    random_pos = torch.from_numpy(random_pos).float().to(args.device)
                     this_feat_transform = (this_feat_transform > random_pos) * args.clip + (this_feat_transform < random_neg) * (-args.clip)
                     this_feat_transform = this_feat_transform.float()
                     feat_transform_grad[layer] += this_feat_transform
@@ -200,8 +201,8 @@ def train_GCN(train_loader, test_loader, models, itemID_parties, optimizers, dat
                 this_layer_grad = torch.clamp(this_layer_grad, -0.5, 0.5)
                 random_neg = np.random.uniform(low=-args.clip, high=0, size=this_layer_grad.shape)
                 random_pos = np.random.uniform(low=0, high=args.clip, size=this_layer_grad.shape)
-                random_neg = torch.from_numpy(random_neg).float()
-                random_pos = torch.from_numpy(random_pos).float()
+                random_neg = torch.from_numpy(random_neg).float().to(args.device)
+                random_pos = torch.from_numpy(random_pos).float().to(args.device)
                 this_layer_grad = (this_layer_grad > random_pos) * args.clip + (this_layer_grad < random_neg) * (-args.clip)
                 this_layer_grad = this_layer_grad.float()
                 layer_agg_grad += this_layer_grad
@@ -218,10 +219,11 @@ def train_GCN(train_loader, test_loader, models, itemID_parties, optimizers, dat
               this_optimizer = optimizers[i]
               this_optimizer.step()
           with torch.no_grad():
-              train_result = metrics(models, train_loader)
-              test_result = metrics(models, test_loader)
+              train_result = metrics(models, train_loader,itemID_parties, dataset.n_users, phi, max_rating,phi_inv,cor_ratio, args)
+              test_result = metrics(models, test_loader,itemID_parties, dataset.n_users, phi, max_rating,phi_inv,cor_ratio, args)
               if test_result < best_rmse:
                 best_rmse, best_epoch = test_result, epoch
+              print("Train_RMSE: {:.3f}, Test_RMSE: {:.3f}".format(train_result, test_result))
         print("End. Best epoch {:03d}: Test_RMSE is {:.3f}".format(best_epoch, best_rmse))
 
 def train_GGNN(train_loader, test_loader, models, itemID_parties, optimizers, dataset, phi, args):

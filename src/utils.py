@@ -18,7 +18,7 @@ def sparseProject(w, d, t):
       sparseMat[j+w*i] = (hashIdx == j) * randSigns
   return sparseMat / np.sqrt(t)
 
-def metrics(models, dataloader, itemID_parties, n_users, phi, max_rating, args):
+def metrics(models, dataloader, itemID_parties, n_users, phi, max_rating,phi_inv,cor_ratio, args):
     RMSE = np.array([], dtype = np.float32)
     useremb_aggs = torch.zeros(args.n_parties, args.n_layers, n_users, args.latent_dim)
     for layer in range(args.n_layers):
@@ -41,9 +41,10 @@ def metrics(models, dataloader, itemID_parties, n_users, phi, max_rating, args):
                 if j!=i:
                     this_useremb_aggs += useremb_aggs[j]
             this_useremb_aggs = torch.einsum('pu,huk->hpk', phi, this_useremb_aggs)
-            prediction = this_model(this_users, this_items, this_useremb_aggs)
+            prediction = this_model(this_users, this_items, this_useremb_aggs,phi_inv, cor_ratio)
             this_ratings = this_ratings.float()
             prediction = prediction.clamp(min=0.0, max=max_rating)
+            this_ratings = this_ratings.to(prediction.device)
             SE = (prediction - this_ratings).pow(2)
             RMSE = np.append(RMSE, SE.detach().cpu().numpy())
             last_item_idx += this_model.num_items
