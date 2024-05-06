@@ -8,9 +8,11 @@ import time
 import argparse
 import warnings
 from tqdm import tqdm
+import wandb
 warnings.filterwarnings(action='ignore', category=FutureWarning) 
 
 if __name__ == '__main__':
+    wandb.init(project="VerFedGNN", name="GGNN")
     parser = argparse.ArgumentParser()
     parser.add_argument('--latent_dim', type=int, default=6, help="dimension of latent factors")
     parser.add_argument('--n_layers', type=int, default=2, help="number of layers")
@@ -139,7 +141,8 @@ if __name__ == '__main__':
     if args.model == "GCN":
         train_GCN(train_loader, test_loader, models, itemID_parties, optimizers, dataset,max_rating, phi, phi_inv,args)
     elif args.model == "GAT":
-        train_dataset = GATdata(train_users, train_items, train_ratings)
-        test_dataset = GATdata(test_users, test_items, test_ratings)
+       train_GAT(train_loader, test_loader, models, itemID_parties, optimizers, dataset,max_rating, phi, phi_inv ,args)
+        
     else:
-       train_GAT(train_loader, test_loader, models, itemID_parties, optimizers, dataset, phi, args)
+       train_GGNN(train_loader, test_loader, models, itemID_parties, optimizers, dataset,max_rating, phi, phi_inv ,args)
+        

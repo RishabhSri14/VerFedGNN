@@ -40,6 +40,7 @@ def metrics(models, dataloader, itemID_parties, n_users, phi, max_rating,phi_inv
             for j in range(args.n_parties):
                 if j!=i:
                     this_useremb_aggs += useremb_aggs[j]
+            this_useremb_aggs = this_useremb_aggs.to(phi.device)
             this_useremb_aggs = torch.einsum('pu,huk->hpk', phi, this_useremb_aggs)
             prediction = this_model(this_users, this_items, this_useremb_aggs,phi_inv, cor_ratio)
             this_ratings = this_ratings.float()

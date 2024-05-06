@@ -32,26 +32,7 @@ class base_mod(nn.Module):
     def __init_weight(self, itemID_parties, party_num, args):
         pass
 
-    def __dropout_x(self, x, keep_prob):
-        size = x.size()
-        index = x.indices().t()
-        values = x.values()
-        random_index = torch.rand(len(values)) + keep_prob
-        random_index = random_index.int().bool()
-        index = index[random_index]
-        values = values[random_index]
-        g = torch.sparse.FloatTensor(index.t(), values, size)
-        g = g.to_dense()
-        return g
     
-    def __dropout(self, keep_prob):
-        if self.A_split:
-            graph = []
-            for g in self.Graph:
-                graph.append(self.__dropout_x(g, keep_prob))
-        else:
-            graph = self.__dropout_x(self.Graph, keep_prob)
-        return graph
     
     @abstractmethod
     def computer(self, missing_user_aggs, phi_inv, args):
@@ -77,10 +58,10 @@ class base_mod(nn.Module):
 
 class GAT(base_mod):
     def __init__(self, dataset, graph, itemID_parties, party_num, args):
-        super(base_mod, self).__init__()
-        self.a = nn.Parameter(torch.ones(size=(2*args.latent_dim, 1)))
-        self.leakyrelu = nn.LeakyReLU(self.alpha)
-        self.feat_transform = nn.ParameterList([nn.Parameter(self.W_data) for i in range(args.n_layers)])
+        super(GAT, self).__init__(dataset, graph, itemID_parties, party_num, args)
+        self.a = nn.Parameter(torch.ones(size=(2*args.latent_dim, 1))).to(args.device)
+        self.leakyrelu = nn.LeakyReLU(self.alpha).to(args.device)
+        self.feat_transform = nn.ParameterList([nn.Parameter(self.W_data).to(args.device) for i in range(args.n_layers)])
         self.__init_weight(itemID_parties, party_num, args)
 
     def __init_weight(self, itemID_parties, party_num, args):
@@ -106,7 +87,7 @@ class GAT(base_mod):
         self.users_emb_agg = [0 for i in range(self.n_layers)]
         users_emb = self.embedding_user.weight
         items_emb = self.embedding_item.weight
-        all_emb = torch.cat([users_emb, items_emb])
+        all_emb = torch.cat([users_emb, items_emb]).to(self.args.device)
         embs = [all_emb]
         for layer in range(self.n_layers):
             attention = self._prepare_attentional_mechanism_input(all_emb, layer, g_droped)
@@ -128,7 +109,7 @@ class GAT(base_mod):
         # broadcast add
         e = Wh1 + Wh2.T # e.shape: (N+M, N+M)
         e = self.leakyrelu(e)
-        e = torch.exp(e)
+        e = torch.exp(e).to(self.args.device)
         attention = g_droped * e
         attention_sum_u, attention_sum_i = torch.split(attention, [self.num_users, self.num_items])
         # user_item_sim: N*M matrix
@@ -139,8 +120,27 @@ class GAT(base_mod):
         attention_sum = torch.cat((attention_sum_u, attention_sum_i)).unsqueeze(dim=1)
         attention = attention / attention_sum
         return attention
-
-    def computer(self, missing_user_aggs, phi_inv, args):
+    def __dropout_x(self, x, keep_prob):
+        size = x.size()
+        index = x.indices().t()
+        values = x.values()
+        random_index = torch.rand(len(values)) + keep_prob
+        random_index = random_index.int().bool()
+        index = index[random_index]
+        values = values[random_index]
+        g = torch.sparse.FloatTensor(index.t(), values, size)
+        g = g.to_dense()
+        return g
+    
+    def __dropout(self, keep_prob):
+        if self.A_split:
+            graph = []
+            for g in self.Graph:
+                graph.append(self.__dropout_x(g, keep_prob))
+        else:
+            graph = self.__dropout_x(self.Graph, keep_prob)
+        return graph
+    def computer(self, missing_user_aggs, phi_inv, cor_ratio,args):
         """
         propagate methods for lightGCN
         """       
@@ -280,18 +280,19 @@ class GCN(base_mod):
         users = torch.tensordot(embs_user, self.layer_agg_weight, dims=([0],[0]))
         return users, items
 
-class GGNN(nn.Module):
+class GGNN(base_mod):
     def __init__(self, dataset, graph, itemID_parties, party_num, args):
-        super(GGNN, self).__init__()
-        self.tanh = nn.Tanh()
+        super(GGNN, self).__init__(dataset, graph, itemID_parties, party_num, args)
+        self.dataset = dataset
+        self.tanh = nn.Tanh().to(args.device)   
         torch.manual_seed(12345)
-        data = torch.randn((args.latent_dim, args.latent_dim))
-        self.W = nn.Parameter(data)
-        self.Wr = nn.Parameter(data)
-        self.Wz = nn.Parameter(data)
-        self.U = nn.Parameter(data)
-        self.Ur = nn.Parameter(data)
-        self.Uz = nn.Parameter(data)
+        data = torch.randn((args.latent_dim, args.latent_dim)).to(args.device)
+        self.W = nn.Parameter(data).to(args.device)
+        self.Wr = nn.Parameter(data).to(args.device)
+        self.Wz = nn.Parameter(data).to(args.device)
+        self.U = nn.Parameter(data).to(args.device)
+        self.Ur = nn.Parameter(data).to(args.device)
+        self.Uz = nn.Parameter(data).to(args.device)
         self.__init_weight(itemID_parties, party_num, args)
 
     def __init_weight(self, itemID_parties, party_num, args):
@@ -299,9 +300,9 @@ class GGNN(nn.Module):
         self.num_items  = len(itemID_parties[party_num])
         self.num_all_items  = self.dataset.m_items
         self.embedding_user = torch.nn.Embedding(
-            num_embeddings=self.num_users, embedding_dim=self.latent_dim)
+            num_embeddings=self.num_users, embedding_dim=self.latent_dim).to(args.device)
         self.embedding_item = torch.nn.Embedding(
-            num_embeddings=self.num_items, embedding_dim=self.latent_dim)
+            num_embeddings=self.num_items, embedding_dim=self.latent_dim).to(args.device)
 
         if self.pretrain:
             self.embedding_user.weight.data.copy_(torch.from_numpy(self.pretrain.embedding_user.weight))
@@ -335,8 +336,29 @@ class GGNN(nn.Module):
         e_tilde = self.tanh(e_tilde)
         embs_update = (1-Z) * embs + Z * e_tilde
         return embs_update
+
+    def __dropout_x(self, x, keep_prob):
+        size = x.size()
+        index = x.indices().t()
+        values = x.values()
+        random_index = torch.rand(len(values)) + keep_prob
+        random_index = random_index.int().bool()
+        index = index[random_index]
+        values = values[random_index]
+        g = torch.sparse.FloatTensor(index.t(), values, size)
+        g = g.to_dense()
+        return g
     
-    def computer(self, missing_user_aggs, phi_inv, args):
+    def __dropout(self, keep_prob):
+        if self.A_split:
+            graph = []
+            for g in self.Graph:
+                graph.append(self.__dropout_x(g, keep_prob))
+        else:
+            graph = self.__dropout_x(self.Graph, keep_prob)
+        return graph
+
+    def computer(self, missing_user_aggs, phi_inv, cor_ratio,args):
         """
         propagate methods for lightGCN
         """  
@@ -345,7 +367,8 @@ class GGNN(nn.Module):
         items_emb = self.embedding_item.weight
         all_emb = torch.cat([users_emb, items_emb])
         embs = [all_emb]
-        if missing_user_aggs != None:
+        if missing_user_aggs is not None:
+            
             missing_user_aggs = torch.einsum('up,hpk->huk', phi_inv, missing_user_aggs)
             # pass
         else:

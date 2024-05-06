@@ -1,0 +1,62 @@
+Number of items: 4923
+Number of users: 200
+Max rating: 5.0
+Number of users: 200
+Training Started....
+Train_RMSE: 2.023, Test_RMSE: 2.048
+Train_RMSE: 1.233, Test_RMSE: 1.278
+Train_RMSE: 0.979, Test_RMSE: 1.032
+Train_RMSE: 0.909, Test_RMSE: 0.990
+Train_RMSE: 0.864, Test_RMSE: 0.976
+Train_RMSE: 0.838, Test_RMSE: 0.969
+Train_RMSE: 0.823, Test_RMSE: 0.973
+Train_RMSE: 0.807, Test_RMSE: 0.960
+Train_RMSE: 0.798, Test_RMSE: 0.965
+Train_RMSE: 0.792, Test_RMSE: 0.969
+Train_RMSE: 0.786, Test_RMSE: 0.966
+Train_RMSE: 0.784, Test_RMSE: 0.965
+Train_RMSE: 0.782, Test_RMSE: 0.969
+Train_RMSE: 0.779, Test_RMSE: 0.972
+Train_RMSE: 0.777, Test_RMSE: 0.975
+Train_RMSE: 0.775, Test_RMSE: 0.978
+Train_RMSE: 0.775, Test_RMSE: 0.981
+Train_RMSE: 0.774, Test_RMSE: 0.980
+Train_RMSE: 0.774, Test_RMSE: 0.985
+Train_RMSE: 0.773, Test_RMSE: 0.983
+Train_RMSE: 0.770, Test_RMSE: 0.981
+Train_RMSE: 0.771, Test_RMSE: 0.984
+Train_RMSE: 0.770, Test_RMSE: 0.987
+Train_RMSE: 0.769, Test_RMSE: 0.986
+Train_RMSE: 0.770, Test_RMSE: 0.988
+Train_RMSE: 0.768, Test_RMSE: 0.989
+Train_RMSE: 0.768, Test_RMSE: 0.986
+Train_RMSE: 0.770, Test_RMSE: 0.986
+Train_RMSE: 0.773, Test_RMSE: 0.997
+Train_RMSE: 0.766, Test_RMSE: 0.990
+Train_RMSE: 0.768, Test_RMSE: 0.994
+Train_RMSE: 0.765, Test_RMSE: 0.992
+Train_RMSE: 0.766, Test_RMSE: 0.991
+Train_RMSE: 0.766, Test_RMSE: 0.990
+Train_RMSE: 0.764, Test_RMSE: 0.989
+Train_RMSE: 0.766, Test_RMSE: 0.989
+Train_RMSE: 0.766, Test_RMSE: 0.991
+Train_RMSE: 0.765, Test_RMSE: 0.991
+Train_RMSE: 0.764, Test_RMSE: 0.990
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 10/10 [00:00<00:00, 13.30it/s]
+ 78%|██████████████████████████████████████████████████████████████████████████████████████████████████████████▊                              | 39/50 [00:28<00:07,  1.49it/s]
+Train_RMSE: 0.766, Test_RMSE: 0.995
+Train_RMSE: 0.764, Test_RMSE: 0.992
+
+ 84%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████                      | 42/50 [00:30<00:05,  1.56it/s]
+Train_RMSE: 0.763, Test_RMSE: 0.993
+Train_RMSE: 0.764, Test_RMSE: 0.994
+
+ 90%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎             | 45/50 [00:32<00:03,  1.50it/s]
+Train_RMSE: 0.764, Test_RMSE: 0.992
+Train_RMSE: 0.761, Test_RMSE: 0.993
+
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 50/50 [00:35<00:00,  1.39it/s]
+Train_RMSE: 0.762, Test_RMSE: 0.993
+Train_RMSE: 0.761, Test_RMSE: 0.992
+End. Best epoch 007: Test_RMSE is 0.960

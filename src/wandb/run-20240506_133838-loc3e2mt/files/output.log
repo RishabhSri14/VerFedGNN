@@ -1,0 +1,124 @@
+Number of items: 4923
+Number of users: 200
+Max rating: 5.0
+Number of users: 200
+Training Started....
+Runing Epoch 000 costs 00: 00: 00
+Train_RMSE: 3.541, Test_RMSE: 3.576
+Runing Epoch 001 costs 00: 00: 00
+Train_RMSE: 2.983, Test_RMSE: 3.077
+Runing Epoch 002 costs 00: 00: 00
+Train_RMSE: 2.140, Test_RMSE: 2.336
+Runing Epoch 003 costs 00: 00: 00
+Train_RMSE: 1.455, Test_RMSE: 1.780
+Runing Epoch 004 costs 00: 00: 00
+Train_RMSE: 1.153, Test_RMSE: 1.576
+Runing Epoch 005 costs 00: 00: 00
+Train_RMSE: 1.009, Test_RMSE: 1.498
+Runing Epoch 006 costs 00: 00: 00
+Train_RMSE: 0.918, Test_RMSE: 1.449
+Runing Epoch 007 costs 00: 00: 00
+Train_RMSE: 0.870, Test_RMSE: 1.424
+Runing Epoch 008 costs 00: 00: 00
+Train_RMSE: 0.843, Test_RMSE: 1.407
+Runing Epoch 009 costs 00: 00: 00
+Train_RMSE: 0.822, Test_RMSE: 1.401
+Runing Epoch 010 costs 00: 00: 00
+Train_RMSE: 0.811, Test_RMSE: 1.396
+Runing Epoch 011 costs 00: 00: 00
+Train_RMSE: 0.806, Test_RMSE: 1.398
+Runing Epoch 012 costs 00: 00: 00
+Train_RMSE: 0.796, Test_RMSE: 1.394
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 10/10 [00:00<00:00, 13.74it/s]
+ 26%|███████████████████████████████████▌                                                                                                     | 13/50 [00:11<00:29,  1.26it/s]
+Runing Epoch 013 costs 00: 00: 00
+Train_RMSE: 0.789, Test_RMSE: 1.393
+Runing Epoch 014 costs 00: 00: 00
+
+ 30%|█████████████████████████████████████████                                                                                                | 15/50 [00:13<00:28,  1.25it/s]
+Runing Epoch 015 costs 00: 00: 00
+Train_RMSE: 0.782, Test_RMSE: 1.393
+Runing Epoch 016 costs 00: 00: 00
+Train_RMSE: 0.782, Test_RMSE: 1.394
+Runing Epoch 017 costs 00: 00: 00
+
+ 36%|█████████████████████████████████████████████████▎                                                                                       | 18/50 [00:15<00:26,  1.20it/s]
+Runing Epoch 018 costs 00: 00: 00
+Train_RMSE: 0.776, Test_RMSE: 1.392
+Runing Epoch 019 costs 00: 00: 00
+
+ 40%|██████████████████████████████████████████████████████▊                                                                                  | 20/50 [00:17<00:25,  1.19it/s]
+Runing Epoch 020 costs 00: 00: 00
+Train_RMSE: 0.773, Test_RMSE: 1.394
+Runing Epoch 021 costs 00: 00: 00
+Train_RMSE: 0.772, Test_RMSE: 1.394
+Runing Epoch 022 costs 00: 00: 00
+
+ 46%|███████████████████████████████████████████████████████████████                                                                          | 23/50 [00:19<00:21,  1.23it/s]
+Runing Epoch 023 costs 00: 00: 00
+Train_RMSE: 0.771, Test_RMSE: 1.396
+Runing Epoch 024 costs 00: 00: 00
+
+ 50%|████████████████████████████████████████████████████████████████████▌                                                                    | 25/50 [00:21<00:20,  1.21it/s]
+Runing Epoch 025 costs 00: 00: 00
+Train_RMSE: 0.772, Test_RMSE: 1.397
+Runing Epoch 026 costs 00: 00: 01
+
+ 54%|█████████████████████████████████████████████████████████████████████████▉                                                               | 27/50 [00:23<00:21,  1.08it/s]
+Runing Epoch 027 costs 00: 00: 01
+Train_RMSE: 0.766, Test_RMSE: 1.396
+Runing Epoch 028 costs 00: 00: 00
+
+ 58%|███████████████████████████████████████████████████████████████████████████████▍                                                         | 29/50 [00:25<00:19,  1.06it/s]
+Runing Epoch 029 costs 00: 00: 00
+Train_RMSE: 0.764, Test_RMSE: 1.396
+Runing Epoch 030 costs 00: 00: 00
+Train_RMSE: 0.763, Test_RMSE: 1.397
+Runing Epoch 031 costs 00: 00: 00
+
+ 64%|███████████████████████████████████████████████████████████████████████████████████████▋                                                 | 32/50 [00:27<00:15,  1.17it/s]
+Runing Epoch 032 costs 00: 00: 00
+Train_RMSE: 0.762, Test_RMSE: 1.398
+Runing Epoch 033 costs 00: 00: 00
+
+ 68%|█████████████████████████████████████████████████████████████████████████████████████████████▏                                           | 34/50 [00:29<00:13,  1.19it/s]
+Runing Epoch 034 costs 00: 00: 00
+Train_RMSE: 0.761, Test_RMSE: 1.398
+Runing Epoch 035 costs 00: 00: 00
+
+ 72%|██████████████████████████████████████████████████████████████████████████████████████████████████▋                                      | 36/50 [00:31<00:11,  1.18it/s]
+Runing Epoch 036 costs 00: 00: 00
+Train_RMSE: 0.759, Test_RMSE: 1.398
+Runing Epoch 037 costs 00: 00: 00
+Train_RMSE: 0.758, Test_RMSE: 1.398
+Runing Epoch 038 costs 00: 00: 00
+
+ 78%|██████████████████████████████████████████████████████████████████████████████████████████████████████████▊                              | 39/50 [00:33<00:09,  1.20it/s]
+Runing Epoch 039 costs 00: 00: 00
+Train_RMSE: 0.757, Test_RMSE: 1.398
+Runing Epoch 040 costs 00: 00: 00
+
+ 82%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                        | 41/50 [00:35<00:07,  1.19it/s]
+Runing Epoch 041 costs 00: 00: 00
+Train_RMSE: 0.755, Test_RMSE: 1.399
+Runing Epoch 042 costs 00: 00: 00
+Train_RMSE: 0.754, Test_RMSE: 1.400
+Runing Epoch 043 costs 00: 00: 00
+
+ 88%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                | 44/50 [00:37<00:05,  1.20it/s]
+Runing Epoch 044 costs 00: 00: 00
+Train_RMSE: 0.753, Test_RMSE: 1.399
+Runing Epoch 045 costs 00: 00: 00
+
+ 92%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████           | 46/50 [00:39<00:03,  1.23it/s]
+Runing Epoch 046 costs 00: 00: 00
+Train_RMSE: 0.753, Test_RMSE: 1.401
+Runing Epoch 047 costs 00: 00: 00
+Train_RMSE: 0.749, Test_RMSE: 1.400
+Runing Epoch 048 costs 00: 00: 00
+
+ 98%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎  | 49/50 [00:41<00:00,  1.26it/s]
+Runing Epoch 049 costs 00: 00: 00
+Train_RMSE: 0.748, Test_RMSE: 1.401
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 50/50 [00:42<00:00,  1.17it/s]

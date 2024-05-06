@@ -1,0 +1,248 @@
+{
+    "os": "Linux-4.15.0-213-generic-x86_64-with-glibc2.27",
+    "python": "3.10.4",
+    "heartbeatAt": "2024-05-06T08:12:25.025206",
+    "startedAt": "2024-05-06T08:12:23.526361",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--model",
+        "GGNN"
+    ],
+    "state": "running",
+    "program": "/home2/rishabh.s/VerFedGNN/src/main.py",
+    "codePath": "src/main.py",
+    "git": {
+        "remote": "git@github.com:RishabhSri14/VerFedGNN.git",
+        "commit": "85817e084e1f3450229911db1d5a42cde5418fee"
+    },
+    "email": "rishabh14601@gmail.com",
+    "root": "/home2/rishabh.s/VerFedGNN",
+    "host": "gnode017",
+    "username": "rishabh.s",
+    "executable": "/home2/rishabh.s/miniconda3/envs/CV/bin/python",
+    "cpu_count": 20,
+    "cpu_count_logical": 40,
+    "cpu_freq": {
+        "current": 1.3330000000000006,
+        "min": 1200.0,
+        "max": 3400.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1.41,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.204,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.199,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.136,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3.16,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.467,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.203,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.203,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.202,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.202,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.203,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.202,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.202,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.202,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.203,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.202,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.202,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.202,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.203,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.202,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.837,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.2,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.199,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.205,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.939,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.476,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.2,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.2,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.2,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.201,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.201,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.201,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.201,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.2,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.201,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.201,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.201,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.2,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.201,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1.201,
+            "min": 1200.0,
+            "max": 3400.0
+        }
+    ],
+    "disk": {
+        "total": 136.48257064819336,
+        "used": 65.17633056640625
+    },
+    "gpu": "NVIDIA GeForce GTX 1080 Ti",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce GTX 1080 Ti",
+            "memory_total": 11811160064
+        }
+    ],
+    "memory": {
+        "total": 125.78684997558594
+    }
+}
