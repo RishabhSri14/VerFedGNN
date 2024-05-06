@@ -37,7 +37,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     if args.dataset == "movielens":
-        data = pd.read_csv('rating.csv')
+        data = pd.read_csv('encrypted_dataset.csv')
     else:
         data = pd.read_csv('/root/Book-Ratings.csv')
         top_users = data.groupby('User-ID')['Book-Rating'].count()
@@ -139,7 +139,7 @@ if __name__ == '__main__':
         optimizers.append(optimizer)
     print("Training Started....")
     if args.model == "GCN":
-        train_GCN(train_loader, test_loader, models, itemID_parties, optimizers, dataset,max_rating, phi, phi_inv,args)
+        model=train_GCN(train_loader, test_loader, models, itemID_parties, optimizers, dataset,max_rating, phi, phi_inv,args)
     elif args.model == "GAT":
        train_GAT(train_loader, test_loader, models, itemID_parties, optimizers, dataset,max_rating, phi, phi_inv ,args)
         
