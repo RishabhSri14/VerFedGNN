@@ -386,3 +386,87 @@ def train_GGNN(train_loader, test_loader, models, itemID_parties, optimizers, da
 
         if test_result < best_rmse:
           best_rmse, best_epoch = test_result, epoch
+          
+          
+### adversarial ttack and cross graph accuracy
+# def generate_adversarial_data(model, test_loader):
+#     adversarial_data=[]
+#     for batch in test_loader:
+#         user, item, rating = batch
+#         user = user.to(args.device)
+#         item = item.to(args.device)
+#         rating = rating.to(args.device)
+#         rating = rating.float()
+#         prediction = model(user, item)
+#         loss = torch.nn.MSELoss()(prediction, rating)
+#         loss.backward()
+#         item_grad = item.grad
+#         item_grad = item_grad.cpu().detach().numpy()
+#         item_grad = np.abs(item_grad)
+#         item_grad = np.argsort(item_grad)
+#         adversarial_data.append(item_grad)
+#     return adversarial_data
+
+# def generate_cross_graph_data(dataset,num_graphs):
+#     cross_graph_data=[]
+#     for _ in range(num_graphs):
+#         cross_graph_data.append(dataset.getSparseGraphs(itemID_parties, args))
+        
+#     return cross_graph_data
+
+# def simulate_deanonimization_attack(model,adversarial_data):
+#     model.eval()
+#     adversarial_preds=[]
+#     with torch.no_grad():
+#         for item_grad in adversarial_data:
+#             inputs=data['UserId'].values
+#             for i in range(len(item_grad)):
+#                 inputs[inputs==item_grad[i]]=0
+#             inputs=torch.tensor(inputs)
+#             inputs=inputs.to(args.device)
+#             item=torch.tensor(item_grad)
+#             item=item.to(args.device)
+#             prediction=model(inputs,item)
+#             adversarial_preds.append(prediction)
+#     return adversarial_preds
+
+# def evaluate_inference_accuracy(model,test_loader):
+#     model.eval()
+#     correct=0
+#     total=0
+#     with torch.no_grad():
+#         for data in test_loader:
+#             user, item, rating = data
+#             user = user.to(args.device)
+#             item = item.to(args.device)
+#             rating = rating.to(args.device)
+#             rating = rating.float()
+#             prediction = model(user, item)
+#             correct += torch.sum(torch.abs(prediction-rating)<0.5).item()
+#             total += len(rating)
+#     return correct/total
+
+# def simulate_cross_graph_attack(model,cross_graph_data):
+#     model.eval()
+#     cross_graph_preds=[]
+#     with torch.no_grad():
+#         for cross_graph in cross_graph_data:
+#             inputs=data['UserId'].values
+#             for i in range(len(cross_graph)):
+#                 inputs[inputs==cross_graph[i]]=0
+#             inputs=torch.tensor(inputs)
+#             inputs=inputs.to(args.device)
+#             item=torch.tensor(cross_graph)
+#             item=item.to(args.device)
+#             prediction=model(inputs,item)
+#             cross_graph_preds.append(prediction)
+#     return cross_graph_preds
+
+# accuracy_before_attack=evaluate_inference_accuracy(model,test_loader)
+# print("Inference accuracy before attack:",accuracy_before_attack)
+# adversarial_data=generate_adversarial_data(model,test_loader)
+# cross_graph_data=generate_cross_graph_data(dataset,10)
+# adversarial_preds=simulate_deanonimization_attack(model,adversarial_data)
+# cross_graph_preds=simulate_cross_graph_attack(model,cross_graph_data)
+# accuracy_after_attack=evaluate_inference_accuracy(model,test_loader)
+# print("Inference accuracy after attack:",accuracy_after_attack)
